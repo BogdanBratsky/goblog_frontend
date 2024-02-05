@@ -1,51 +1,32 @@
 <template>
     <header class="header">
         <nav class="header__nav">
-            <router-link to="/articles">
+                <router-link to="/articles">
                 <div class="logo-wrap">
                     <div class="logo-icon">
-                        <!-- <img src="../../public/images/LOGO.png" alt=""> -->
                         ARTICLES
                     </div>
                 </div>
-            </router-link>
-
-            <div class="header__user-block" v-if="isAuthorised">
-                <!-- <div class="header__write-btn">
-                    <img src="../../public/images/write.png" alt="">
-                </div> -->
-
-                <div 
-                    class="header__user-btn"
-                    @click="userClick()"
-                    v-if="isAuthorised"
-                >
-
-                {{ $store.state.userNAME }}
-                
+                </router-link>
+                <div class="header__user-btn" @click="showMenu()" v-if="isAuthorised">
+                    {{ userName }}
                     <div v-if="isClicked" class="user-btn__clicked">
-                        <router-link to="/profile">
-                            <span class="user-btn__profile">
-                                Мой профиль
-                            </span>
+                        <router-link :to="'/id' + userId">
+                        <span class="user-btn__profile">
+                            Мой профиль
+                        </span>
                         </router-link>
-                        <span 
-                            class="user-btn__exit"
-                            @click="exitFunc()"
-                        >
+                        <span class="user-btn__exit" @click="exitFunc()">
                             <img src="../../public/images/exit.png" alt="">
                             Выйти
                         </span>
                     </div>
-
                 </div>
-                
-                <router-link v-if="!isAuthorised" to="/login">
-                    <div class="header__login-btn">
-                        Войти
-                    </div>
-                </router-link>
-            </div>
+            <router-link v-if="!isAuthorised" to="/login">
+                <div class="header__login-btn">
+                    Войти
+                </div>
+            </router-link>
         </nav>
     </header>
 </template>
@@ -60,14 +41,25 @@ export default {
         return {
             isAuthorised: false,
             isClicked: false,
-            user: '',
+            userName: '',
             userId: ''
         }
     },
+    computed: {
+        profile() {
+            return this.$store.state.userID;
+        }
+    },
     methods: {
-        userClick() {
+        showMenu() {
             this.isClicked = !this.isClicked;
         },
+        // closeMenu() {
+        //     if (!this.$refs.myElement.contains(event.target)) {
+        //         console.log('Клик вне элемента');
+        //         this.isClicked = false;
+        //     }
+        // },
         exitFunc() {
             localStorage.removeItem('token');
             window.location.href = '/';
@@ -79,29 +71,31 @@ export default {
                 'Authorization': `Bearer ${token}`
                 }
             });
-            this.$store.state.userID = response.data
-            this.isAuthorised = true
+            this.userId = response.data;
+            this.$store.state.userID = this.userId;
+            this.isAuthorised = true;
 
-            console.log(localStorage.token)
-            console.log(response.data)
-            this.getUserById(this.$store.state.userID)
+            console.log(localStorage.token);
+            console.log(response.data);
+            this.getUserById(this.userId);
 
             } catch (error) {
                 console.error('Error fetching user data:', error);
-                this.isAuthorised = false
+                this.isAuthorised = false;
             }
         }, 
         async getUserById(id) {
             try {
                 const response = await axios.get(`http://localhost:3000/users/${id}`);
-                this.$store.state.userNAME = response.data.UserName
+                this.userName = response.data.UserName
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
         } 
     },
     mounted() {
-        this.getProfile(localStorage.token)
+        this.getProfile(localStorage.token);
+        console.log(this.isAuthorised)
     },
 }
 </script>
@@ -134,6 +128,9 @@ export default {
             font-size: 23px;
             font-family: 'Oswald', sans-serif;
             color: $logoColor;
+            &:active {
+                padding-top: 2px;
+            }
             img {
                 width: 28px;
                 height: 28px;
@@ -149,11 +146,15 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 24px;
-        height: 100%;
+        margin-right: 12px;
+        // height: 60%;
+        // box-shadow: 0 0 10px $shadowColor;
+        // border: 1px solid $borderColor;
+        padding: 5px;
+        border-radius: 3px;
         img {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
         }
     }
     &__user-btn {
@@ -178,11 +179,11 @@ export default {
         cursor: pointer;
         display: flex;
         align-items: center;
-        padding: 6px 7px;
+        padding: 7px 12px;
         border: 1px solid $borderColor;
         border-radius: 4px;
         background-color: $btnColor;
-        color: white;
+        color: $btnTxtColor;
         font-family: 'Nunito Sans', sans-serif;
         font-size: 13px;
         &:hover {
@@ -225,8 +226,8 @@ export default {
         border-top: 1px solid $borderColor;
         color: #ff4141;
         img {
-            height: 18px;
-            width: 18px;
+            height: 16px;
+            width: 16px;
             margin-right: 2px;
         }
     }

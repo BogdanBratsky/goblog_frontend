@@ -50,7 +50,7 @@ export default {
     float: left;
     padding: 10px 15px 15px 10px;
     border: 1px solid $borderColor;
-    border-radius: 4px;
+    border-radius: 3px;
     box-shadow: 0 5px 12px $shadowColor;
     background-color: $headerColor;
     font-family: 'Nunito Sans', sans-serif;

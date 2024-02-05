@@ -40,26 +40,29 @@ export default {
     font-family: 'Rubik', sans-serif;
     width: 258px;
     border-radius: 5px;
+    &__title {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 20px;
+        background-color: $headerColor;
+        border: 1px solid $borderColor;
+    }
     &__item {
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         padding: 10px;
-        border-top: 1px solid $borderColor;
+        border-bottom: 1px solid $borderColor;
+        color: $btnColor;
+        // background-color: $headerColor;
         &:hover {
             color: white;
             background-color: $headerColor;
             transition: 0.3s;
         }
-    }
-    &__title {
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        background-color: $headerColor;
     }
 }
 </style>

@@ -1,102 +1,95 @@
 <template>
-    <div class="profile__article-wrapper">
-        <div class="profile__article-item" v-for="article in articles">
+    <div class="wrapper">
+        <article class="article" :article_id="article.PostId"  v-for="article in articles">
+            <div style="display: flex; align-items: center;">
+                <div class="article__date">25.01.2024, 20:25</div>
+            </div>
             <router-link :to="'/articles/' + article.PostId">
-                <article class="article" :article_id="article.PostId">
-                    <div style="display: flex; align-items: center;">
-                        <div class="article__date">25.01.2024, 20:25</div>
-                    </div>
-                    <header class="article__title">
-                        {{ article.PostTitle }}
-                    </header>
-                    <!-- <div class="article__time-to-read">
-                        <img src="../../public/images/watch.png" alt="">
-                        1 мин.
-                    </div> -->
-                    <footer class="article__info">
-                    </footer>
-                    <div class="article__options">
-                        <!-- <img src="../../public/images/options.png" alt=""> -->
-                        <div class="ellipsis">
-                            <h5>&hellip;</h5>
-                        </div>
-                    </div>
-                    <!-- <div style="display: flex; position: absolute; bottom: 10px; right: 10px;"> -->
-                        <!-- <div class="article__comments">
-                            197
-                            <img src="../../public/images/comments1.png" alt="">
-                        </div> -->
-                    <!-- </div> -->
-                </article>
+                <header class="article__title" @click.stop="">
+                    {{ article.PostTitle }}
+                </header>
             </router-link>
-        </div>
+                <!-- <div class="article__time-to-read">
+                    <img src="../../public/images/watch.png" alt="">
+                    1 мин.
+                </div> -->
+                <footer class="article__info">
+                </footer>
+                <blogOptions :userID="article.UserId"/>
+                <!-- <div style="display: flex; position: absolute; bottom: 10px; right: 10px;"> -->
+                    <!-- <div class="article__comments">
+                        197
+                        <img src="../../public/images/comments1.png" alt="">
+                    </div> -->
+                <!-- </div> -->
+            </article>
     </div>
-    <!-- <blogArticlePagination 
-        :pagesCount="Math.ceil(totalCount / perPage)"
-        @enter-page="getUserArticles(this.userId)"
-        :currentPage="pageNum"
-    /> -->
+    <div class="loadmore-wrapper" v-if="totalCount > 10">
+        <blogLoadMore/>
+    </div>
 </template>
 
 <script>
 import blogArticlePagination from '../components/blogArticlePagination.vue';
-import axios from 'axios';
+import blogOptions from '../components/blogOptions.vue';
+import blogLoadMore from '../components/blogLoadMore.vue';
+
 
 export default {
     name: 'blogUserArticles',
     components: {
         blogArticlePagination,
+        blogOptions,
+        blogLoadMore
     },
     data() {
         return {
-            articles: [],
-            totalCount: 0,
             pageNum: 1,
-            perPage: 5
+            perPage: 5,
+            ellipsisIsClicked: false
         }
     },
-    computed: {
-        userId() {
-            return this.$store.state.userID;
-        }
-    },
+    props: ['articles', 'totalCount'],
     methods: {
         changeTab(index) {
             this.activeTab = index;
         },
-        async getUserArticles(id) {
-            try {
-                const response = await axios.get(`http://localhost:3000/users/${id}/articles`, {
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                });
-                this.articles = response.data.posts;
-                this.totalCount = response.data.totalCount;
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+        showArticleMenu(event) {
+            this.ellipsisIsClicked = !this.ellipsisIsClicked;
+            event.stopPropagation();
+            console.log(this.ellipsisIsClicked);
         },
-    },
-    mounted() {
-        this.getUserArticles(this.userId);
-        document.title = this.$store.state.userNAME;
-    },
-    watch() {
-        this.getUserArticles(this.userId);
     }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../variables.scss';
+
+// .loadmore-wrapper {
+//     width: 100%;
+//     margin: 0 auto;
+// }
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 10px $shadowColor;
+}
+
+.loadmore-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+}
 
 .article {
     position: relative;
     margin: 0 auto;
     // margin-bottom: 12px;
-    padding: 12px;
+    padding: 16px 12px;
     border-bottom: 1px solid $borderColor;
     background-color: $mainColor;
     font-family: 'Nunito Sans', sans-serif;
@@ -114,8 +107,9 @@ export default {
         margin-bottom: 10px;
     }
     &__title {
-        font-size: 30px;
+        font-size: 26px;
         margin-bottom: 50px;
+        color: $TitleColor;
         &:hover {
             color: $TitleHoverColor;
             transition: 0.2s;
@@ -141,31 +135,6 @@ export default {
             margin-right: 6px;
         }
     }
-    &__options {
-        position: absolute;
-        top: 0;
-        right: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        // border: 1px solid $borderColor;
-        // box-shadow: 0 0 10px $shadowColor;
-        border-radius: 2px;
-        padding: 5px 12px;
-        .ellipsis {
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            padding-bottom: 10px;
-            color: #535353;
-            &:hover {
-                color: $TitleColor;
-                transition: 0.2s;
-            }
-        }
-    }
     &__comments {
         margin-right: 8px;
         display: inline-flex;
@@ -182,4 +151,5 @@ export default {
         }
     }
 }
+
 </style>

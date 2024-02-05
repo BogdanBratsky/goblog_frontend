@@ -16,20 +16,28 @@ export default {
 @import '../variables.scss';
 
 .loadmore-btn {
-    // margin: 0 auto;
+    user-select: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
-    width: 900px;
-    padding: 15px;
+    width: 100%;
+    padding: 10px 15px;
     border: 1px solid $borderColor;
-    border-radius: 8px;
-    box-shadow: 0 0 5px $shadowColor;
+    border-radius: 3px;
+    box-shadow: 0 5px 10px $shadowColor;
+    background-color: $btnColor;
     color: $TitleColor;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 16px;
+    &:hover {
+        background-color: $btnHoverColor;
+        color: $btnTxtColor;
+        transition: 0.3s;
+    }
+    &:active {
+        background-color: $btnActiveColor;
+    }
 }
 
 </style>

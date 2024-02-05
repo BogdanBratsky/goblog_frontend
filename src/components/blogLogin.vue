@@ -36,7 +36,7 @@ export default {
                 UserEmail: '',
                 PasswordHash: ''
             },
-            token: ''
+            token: '',
         }
     },  
     mounted() {
@@ -55,12 +55,12 @@ export default {
                     this.token = response.data.token;
                     localStorage.setItem('token', this.token);
                     console.log(localStorage.token);
-                    window.location.href = '/profile'
+                    window.location.href = '/';
                 })
                 .catch(error => {
                     console.error('Error:', error);
                 });
-        }
+        },
     }
 }
 </script>
@@ -80,7 +80,7 @@ export default {
     border: 1px solid $borderColor;
     border-radius: 5px;
     box-shadow: 0 0 30px $shadowColor;
-    padding: 20px 30px;
+    padding: 20px 40px;
     &__header {
         user-select: none;
         color: white;
@@ -102,17 +102,17 @@ export default {
         padding: 10px;
         border: 1px solid $borderColor;
         border-radius: 3px;
-        box-shadow: 0 0 30px $shadowColor;
-        background-color: #3b3b3b;
+        box-shadow: 0 0 5px $shadowColor inset;
+        background-color: $mainColor;
         color: $TitleColor;
         font-family: 'Nunito Sans', sans-serif;
         &::placeholder {
-            color: #cbcbcb;
+            color: $btnColor;
             font-family: 'Nunito Sans', sans-serif;
             font-size: 14px;
         }
         &:focus {
-            box-shadow: 0 0 20px $shadowColor;
+            box-shadow: 0 0 10px $shadowColor;
         }
     }
     &__footer {

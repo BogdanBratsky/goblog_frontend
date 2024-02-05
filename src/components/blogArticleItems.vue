@@ -1,10 +1,11 @@
 <template>
-    <router-link :to="'/articles/' + title.PostId">
-        <article class="article" :article_id="title.PostId">
-            <div class="article__date">25.01.2024, 20:25</div>
-            <header class="article__title">
-                {{ title.PostTitle }}
-            </header>
+    <article class="article" :article_id="title.PostId" @click.stop="">
+        <div class="article__date">25.01.2024, 20:25</div>
+            <router-link :to="'/articles/' + title.PostId">
+                <header class="article__title">
+                    {{ title.PostTitle }}
+                </header>
+            </router-link>
             <footer class="article__info">
                 <div>
                     <!-- <div class="article__time-to-read">
@@ -12,9 +13,11 @@
                         1 мин.
                     </div> -->
                 </div>
-                <div class="article__user-name">
-                    {{ this.user }}
-                </div>
+                <router-link :to="'/id' + title.UserId">
+                    <div class="article__user-name">
+                        {{ user }}
+                    </div>
+                </router-link>
             </footer>
             <div style="display: flex; position: absolute; bottom: 10px; right: 10px;">
                 <!-- <div class="article__comments">
@@ -26,7 +29,6 @@
                 </div>
             </div>
         </article>
-    </router-link>
 </template>
 
 <script>
@@ -86,8 +88,9 @@ export default {
         margin-bottom: 10px;
     }
     &__title {
-        font-size: 30px;
+        font-size: 28px;
         margin-bottom: 50px;
+        color: $TitleColor;
         &:hover {
             color: $TitleHoverColor;
             transition: 0.2s;
@@ -95,8 +98,11 @@ export default {
     }
     &__user-name {
         display: inline-block;
+        // color: $TitleColor;
+        color: $btnColor;
         &:hover {
             color: $TitleHoverColor;
+            transition: 0.4s;
         }
     }
     &__time-to-read {

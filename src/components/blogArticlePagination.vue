@@ -134,6 +134,7 @@ $activeColor: #c2c2c2;
         margin-right: $marginRight;
         box-shadow: 0 0 10px $shadowColor;
         background-color: $headerColor;
+        // background-color: $btnColor;
         &:hover {
             cursor: pointer;
             background-color: $hoverColor;

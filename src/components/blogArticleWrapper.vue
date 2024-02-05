@@ -43,7 +43,7 @@ export default {
     },
     mounted() {
         this.loadArticles();
-        document.title = 'Главная';
+        document.title = 'Все записи';
     },
     methods: {
         async loadArticles(page = 1) {
@@ -63,34 +63,32 @@ export default {
                 console.error('Error fetching data:', error);
             }
         },
-        // getPageNum(pageNumber) {
-        //     this.pageNum = pageNumber;
-        //     console.log(this.pageNum);
-        // }
     }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../variables.scss';
 
 .wrapper {
-    width: 100%;
+    width: 1170px;
     position: relative;
+    display: flex;
+    justify-content: space-between;
     // overflow: auto
 }
 
 .articles-wrapper {
-    float: left;
+    // float: left;
     display: flex;
     flex-direction: column;
     width: 900px;
-    margin: 0 auto;
 }
 
 .categories-wrapper {
-    float: right;
     position: sticky;
     top: 67px;
+    float: right;
+    height: 100%;
 }
 </style>

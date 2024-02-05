@@ -4,6 +4,7 @@ import blogSignup from './components/blogSignup.vue';
 import blogArticlePage from './components/blogArticlePage.vue'
 import blogArticleWrapper from './components/blogArticleWrapper.vue';
 import blogProfilePage from './components/blogProfilePage.vue';
+import blogCreatePostPage from './components/blogCreatePostPage.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -27,8 +28,13 @@ const router = createRouter({
             component: blogSignup 
         },
         { 
-            path: '/profile', 
+            path: '/id:id', 
             component:  blogProfilePage,
+            props: true
+        },
+        { 
+            path: '/new', 
+            component:  blogCreatePostPage,
         },
     ]
 });
