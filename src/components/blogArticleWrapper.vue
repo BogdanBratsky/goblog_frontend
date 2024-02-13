@@ -4,15 +4,19 @@
             <blogArticleItems 
                 v-for="article in articles"
                 :key="article.PostId"
-                :title="article"
+                :article="article"
             />
-            <blogArticlePagination 
+            <!-- <blogArticlePagination 
                 :pagesCount="Math.ceil(totalCount / perPage)"
                 @enter-page="loadArticles"
                 :currentPage="pageNum"
-            />
+            /> -->
+            <div @click="loadArticles" class="loadmore-wrapper" v-if="totalCount > 10 && totalCount != articles.length">
+                <!-- {{ articlesCount }} -->
+                <blogLoadMore/>
+            </div>
         </div>
-        <div class="categories-wrapper">
+        <div class="sidebar">
             <blogCategoriesSidebar/>
         </div>
     </div>
@@ -30,7 +34,7 @@ export default {
         return {
             articles: [],
             totalCount: 0,
-            perPage: 10,
+            perPage: 20,
             pageNum: 1
         }
     },
@@ -39,25 +43,26 @@ export default {
         blogArticleItems,
         blogLoadMore,
         blogArticlePagination,
-        blogCategoriesSidebar
+        blogCategoriesSidebar,
     },
     mounted() {
         this.loadArticles();
         document.title = 'Все записи';
     },
     methods: {
-        async loadArticles(page = 1) {
+        async loadArticles() {
             try {
-                const response = await axios.get(`http://localhost:3000/articles?page=${page}&perPage=${this.perPage}`, {
+                const response = await axios.get(`http://localhost:3000/articles?page=${this.pageNum}&perPage=${this.perPage}`, {
                     // Добавим опции для обхода проблемы CORS в разработке
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                     },
                 });
-                this.articles = response.data.posts; // Переместил инициализацию articles
+                this.articles = [...this.articles, ...response.data.posts];
                 this.totalCount = response.data.totalCount;
-
-                this.pageNum = page 
+                
+                // this.pageNum = page 
+                this.pageNum++;
                 // console.log(response.data.posts); // response.data содержит данные ответа
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -79,16 +84,22 @@ export default {
 }
 
 .articles-wrapper {
-    // float: left;
     display: flex;
     flex-direction: column;
     width: 900px;
 }
 
-.categories-wrapper {
+.sidebar {
     position: sticky;
     top: 67px;
-    float: right;
     height: 100%;
+}
+
+.loadmore-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
 }
 </style>

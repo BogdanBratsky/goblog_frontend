@@ -5,6 +5,8 @@ import blogArticlePage from './components/blogArticlePage.vue'
 import blogArticleWrapper from './components/blogArticleWrapper.vue';
 import blogProfilePage from './components/blogProfilePage.vue';
 import blogCreatePostPage from './components/blogCreatePostPage.vue';
+import blogNotFound from './components/blogNotFound.vue';
+import blogCategoryArticles from './components/blogCategoryArticles.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -29,13 +31,22 @@ const router = createRouter({
         },
         { 
             path: '/id:id', 
-            component:  blogProfilePage,
+            component: blogProfilePage,
             props: true
         },
         { 
-            path: '/new', 
-            component:  blogCreatePostPage,
+            path: '/new-article', 
+            component: blogCreatePostPage,
         },
+        { 
+            path: '/categories/:id', 
+            component: blogCategoryArticles,
+            props: true
+        },
+        {
+            path: '/:notFound(.*)',
+            component: blogNotFound
+        }
     ]
 });
 

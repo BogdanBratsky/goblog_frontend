@@ -3,29 +3,40 @@
         <header class="category-sidebar__title">
             Категории
         </header>
-        <div class="category-sidebar__item" v-for="item in items">
-            {{ item }}
+        <div class="" v-for="category in categories">
+            <router-link :to="`/categories/` + category.CategoryId">
+                <div class="category-sidebar__item">
+                    {{ category.CategoryName }}
+                </div>
+            </router-link>
         </div>
     </aside>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'blogCategoriesSidebar',
     data() {
         return {
-            items: [
-                'Политика', 
-                'Экономика', 
-                'Мир', 
-                'Бизнес', 
-                'Финансы', 
-                'Телекоммуникации', 
-                'Общество', 
-                'Культура', 
-                'Спорт'
-            ]
+           categories: []
         }
+    },
+    methods: {
+        async getCategories() {
+            await axios
+                .get('http://localhost:3000/categories')
+                .then(response => {
+                    this.categories = response.data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    },
+    mounted() {
+        this.getCategories();
     }
 }
 </script>
@@ -40,6 +51,7 @@ export default {
     font-family: 'Rubik', sans-serif;
     width: 258px;
     border-radius: 5px;
+    margin-bottom: 12px;
     &__title {
         padding: 10px;
         display: flex;

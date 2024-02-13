@@ -15,11 +15,18 @@
             ></textarea>
             <textarea 
                 id="content" 
-                rows="15" 
+                rows="17" 
                 type="text" 
                 placeholder="Введите текст"
                 v-model="formData.PostContent"
             ></textarea>
+            <div style="font-size: 15px; margin-bottom: 6px;">Выберите категорию: </div>
+            <select id="category" v-model="formData.CategoryId">
+                <option 
+                    v-for="category in categories"
+                    :value="category.CategoryId"
+                >{{ category.CategoryName }}</option>
+            </select>
             <footer>
                 <button type="submit" class="create__button">Опубликовать</button>
             </footer>
@@ -37,14 +44,14 @@ export default {
             formData: {
                 PostTitle: '',
                 PostContent: '',
-                CategoryId: 1
-            }
+                CategoryId: null
+            },
+            categories: []
         }
     },
     methods: {
         async createArticle() {
-            console.log(this.formData.articleTitle);
-            console.log(this.formData.articleText);
+            if (this.formData.PostTitle == '' || this.formData.PostContent == '') return
             await axios
                 .post('http://localhost:3000/articles', this.formData, {
                     headers: {
@@ -53,8 +60,17 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     // window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        },
+        async getCategories() {
+            await axios
+                .get('http://localhost:3000/categories')
+                .then(response => {
+                    this.categories = response.data;
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -62,6 +78,7 @@ export default {
         }
     },
     mounted() {
+        this.getCategories();
         // Устанавливаем фокус на поле с id="title" при загрузке компонента
         this.$refs.titleInput.focus();
     }
@@ -123,6 +140,23 @@ export default {
             // &:focus {
             //     box-shadow: 0 0 10px $shadowColor;
             // }
+        }
+        #category {
+            cursor: pointer;
+            display: inline-flex;
+            width: 200px;
+            padding: 4px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            background-color: $headerColor;
+            color: $TitleColor;
+            outline: none;
+            border: 1px solid $borderColor;
+            border-radius: 3px;
+            box-shadow: 0 5px 10px $shadowColor;
+            option {
+                cursor: pointer;
+            }
         }
     }
     &__button {

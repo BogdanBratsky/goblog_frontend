@@ -27,7 +27,7 @@ export default {
     border-radius: 3px;
     box-shadow: 0 5px 10px $shadowColor;
     background-color: $btnColor;
-    color: $TitleColor;
+    color: $btnTxtColor;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 16px;
     &:hover {

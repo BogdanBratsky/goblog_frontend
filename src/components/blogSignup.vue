@@ -1,23 +1,27 @@
 <template>
-    <form class="login-block" @submit.prevent="createUser()">
-        <header class="login-block__header">Регистрация</header>
-        <div class="login-block__input">
-            <input type="text" placeholder="Логин" v-model="formData.UserName">
+    <form class="signup-block" @submit.prevent="submitHandler()">
+        <header class="signup-block__header">Регистрация</header>
+        <div class="signup-block__input">
+            <div v-if="errors.login" class="valid-info">{{ errors.login }}</div>
+            <input :class="errors.login ? 'input-warning' : 'input'" type="text" placeholder="Логин" v-model="formData.UserName">
         </div>
-        <div class="login-block__input">
-            <input type="text" placeholder="Почта" v-model="formData.UserEmail">
+        <div class="signup-block__input">
+            <div v-if="errors.email" class="valid-info">{{ errors.email }}</div>
+            <input :class="errors.email ? 'input-warning' : 'input'" type="text" placeholder="Почта" v-model="formData.UserEmail">
         </div>
-        <div class="login-block__input">
-            <input type="password" placeholder="Пароль" v-model="passwordCheck.Password1">
+        <div class="signup-block__input">
+            <div v-if="errors.password1" class="valid-info">{{ errors.password1 }}</div>
+            <input :class="errors.password1 ? 'input-warning' : 'input'" type="password" placeholder="Пароль" v-model="passwordCheck.Password1">
         </div>
-        <div class="login-block__input">
-            <input type="password" placeholder="Повторите пароль" v-model="passwordCheck.Password2">
+        <div class="signup-block__input">
+            <div v-if="errors.password2" class="valid-info">{{ errors.password2 }}</div>
+            <input :class="errors.password2 ? 'input-warning' : 'input'" type="password" placeholder="Повторите пароль" v-model="passwordCheck.Password2">
         </div>
-        <footer class="login-block__footer">
-            <div class="login-block__signup-btn">
+        <footer class="signup-block__footer">
+            <div class="signup-block__signup-btn">
                 <router-link to="/login">Авторизация</router-link>
             </div>
-            <button type="submit" class="login-block__signin-btn">Зарегистрироваться</button>
+            <button type="submit" class="signup-block__signin-btn">Зарегистрироваться</button>
         </footer>
     </form>
 </template>
@@ -32,11 +36,17 @@ export default {
             formData: {
                 UserName: '',
                 UserEmail: '',
-                PasswordHash: ''
+                Password: ''
             },
             passwordCheck: {
                 Password1: '',
                 Password2: ''
+            },
+            errors: {
+                login: null,
+                email: null,
+                password1: null,
+                password2: null
             }
         }
     },
@@ -44,15 +54,42 @@ export default {
         document.title = 'Регистрация';
     },
     methods: {
-        async createUser() {
-            console.log('UserName: ', this.formData.UserName);
-            console.log('UserEmail: ', this.formData.UserEmail);
-            console.log('Password1: ', this.passwordCheck.Password1);
-            console.log('Password2: ', this.passwordCheck.Password2);
-            if (this.passwordCheck.Password1 != this.passwordCheck.Password2) {
-                console.log('Пароли не совпадают!');
+        formIsValid() {
+            let isValid = true;
+
+            if (this.formData.UserName.length === 0) {
+                isValid = false;
+                this.errors.login = 'Введите логин';
             } else {
-                this.formData.PasswordHash = this.passwordCheck.Password1;
+                this.errors.login = null;
+            }
+
+            if (this.formData.UserEmail.length === 0) {
+                isValid = false;
+                this.errors.email = 'Введите почту';
+            } else {
+                this.errors.email = null;
+            }
+
+            if (this.passwordCheck.Password1.length === 0) {
+                isValid = false;
+                this.errors.password1 = 'Введите пароль';
+            } else {
+                this.errors.password1 = null;
+            }
+
+            if (this.passwordCheck.Password2.length === 0) {
+                isValid = false;
+                this.errors.password2 = 'Повторите пароль';
+            } else {
+                this.errors.password2 = null;
+            }
+
+            return isValid;
+        },
+        async submitHandler() {
+            if (this.formIsValid() && this.passwordCheck.Password1 == this.passwordCheck.Password2) {
+                this.formData.Password = this.passwordCheck.Password1;
                 await axios
                     .post('http://localhost:3000/register', this.formData, {
                         headers: {
@@ -74,16 +111,23 @@ export default {
 <style lang="scss" scoped>
 @import '../variables.scss';
 
-@import '../variables.scss';
+.valid-info {
+    color: #c02f2f;
+    align-self: flex-end;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-family: 'Nunito Sans', sans-serif;
+}
 
-.login-block {
+.signup-block {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    align-self: center;
     width: 400px;
     margin: 0 auto;
-    margin-top: 100px;
+    margin-bottom: 24px;
     background-color: $headerColor;
     border: 1px solid $borderColor;
     border-radius: 5px;
@@ -91,7 +135,7 @@ export default {
     padding: 20px 40px;
     &__header {
         user-select: none;
-        color: white;
+        color: $TitleColor;
         width: 100%;
         font-size: 25px;
         margin-bottom: 30px;
@@ -100,14 +144,15 @@ export default {
     }
     &__input {
         display: flex;
+        flex-direction: column;
         align-items: center;
         width: 100%;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
     }
-    input {
+    .input {
         outline: none;
         width: 100%;
-        padding: 10px;
+        padding: 12px 10px;
         border: 1px solid $borderColor;
         border-radius: 3px;
         box-shadow: 0 0 5px $shadowColor inset;
@@ -115,12 +160,33 @@ export default {
         color: $TitleColor;
         font-family: 'Nunito Sans', sans-serif;
         &::placeholder {
+            user-select: none;
             color: $btnColor;
             font-family: 'Nunito Sans', sans-serif;
             font-size: 14px;
         }
         &:focus {
-            box-shadow: 0 0 10px $shadowColor;
+            border: 1px solid $btnColor;
+        }
+    }
+    .input-warning {
+        outline: none;
+        width: 100%;
+        padding: 12px 10px;
+        border: 1px solid #c02f2f;
+        border-radius: 3px;
+        box-shadow: 0 0 5px $shadowColor inset;
+        background-color: $mainColor;
+        color: $TitleColor;
+        font-family: 'Nunito Sans', sans-serif;
+        &::placeholder {
+            user-select: none;
+            color: $btnColor;
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 14px;
+        }
+        &:focus {
+            border: 1px solid $btnColor;
         }
     }
     &__footer {

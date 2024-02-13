@@ -14,6 +14,8 @@ export default {
 @import '../variables.scss';
 
 .main-wrapper {
+    // display: flex;
+    flex: 1 1 auto;
     width: 1170px;
     margin: 0 auto;
     margin-top: 67px;

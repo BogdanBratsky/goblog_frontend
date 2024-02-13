@@ -1,15 +1,19 @@
 <template>
-    <form class="login-block" @submit.prevent="authFunc()">
+    <form class="login-block" @submit.prevent="submitHadnler()">
         <header class="login-block__header">Авторизация</header>
         <div class="login-block__input">
+            <div v-if="errors.email" class="valid-info">{{ errors.email }}</div>
             <input 
+                :class="errors.email ? 'input-warning' : 'input'"
                 type="text" 
                 placeholder="Почта"
                 v-model="formData.UserEmail"
             >
         </div>
         <div class="login-block__input">
+            <div v-if="errors.password" class="valid-info">{{ errors.password }}</div>
             <input 
+                :class="errors.password ? 'input-warning' : 'input'"
                 type="password" 
                 placeholder="Пароль"
                 v-model="formData.PasswordHash"
@@ -34,48 +38,82 @@ export default {
         return {
             formData: {
                 UserEmail: '',
-                PasswordHash: ''
+                PasswordHash: '',
+                isUncrorrect: false
             },
             token: '',
+            errors: {
+                email: null,
+                password: null
+            }
         }
     },  
-    mounted() {
-        document.title = 'Авторизация';
-    },
     methods: {
-        async authFunc() {
-            console.log(this.formData);
-            await axios
-                .post('http://localhost:3000/login', this.formData, {
+        formIsValid() {
+            let isValid = true;
+
+            if (this.formData.UserEmail.length === 0) {
+                isValid = false;
+                this.errors.email = 'Введите почту';
+            } else {
+                this.errors.email = null;
+            }
+
+            if (this.formData.PasswordHash.length === 0) {
+                isValid = false;
+                this.errors.password = 'Введите пароль';
+            } else {
+                this.errors.password = null;
+            }
+
+            return isValid;
+        },
+        async submitHadnler() {
+            if (this.formIsValid()) {
+                await axios
+                    .post('http://localhost:3000/login', this.formData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                })
-                .then(response => {
-                    this.token = response.data.token;
-                    localStorage.setItem('token', this.token);
-                    console.log(localStorage.token);
-                    window.location.href = '/';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                    })
+                    .then(response => {
+                        // this.isUncrorrect = false;
+                        this.token = response.data.token;
+                        localStorage.setItem('token', this.token);
+                        window.location.href = '/';
+                    })
+                    .catch(error => {
+                        this.isUncrorrect = true;
+                        console.error('Error:', error);
+                    });
+            }
         },
-    }
+    },
+    mounted() {
+        document.title = 'Авторизация';
+    },
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../variables.scss';
 
+.valid-info {
+    color: #c02f2f;
+    align-self: flex-end;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
 .login-block {
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-self: center;
     justify-content: center;
     width: 400px;
     margin: 0 auto;
-    margin-top: 100px;
     background-color: $headerColor;
     border: 1px solid $borderColor;
     border-radius: 5px;
@@ -83,7 +121,7 @@ export default {
     padding: 20px 40px;
     &__header {
         user-select: none;
-        color: white;
+        color: $TitleColor;
         width: 100%;
         font-size: 25px;
         margin-bottom: 30px;
@@ -92,14 +130,15 @@ export default {
     }
     &__input {
         display: flex;
+        flex-direction: column;
         align-items: center;
         width: 100%;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
     }
-    input {
+    .input {
         outline: none;
         width: 100%;
-        padding: 10px;
+        padding: 12px 10px;
         border: 1px solid $borderColor;
         border-radius: 3px;
         box-shadow: 0 0 5px $shadowColor inset;
@@ -107,12 +146,33 @@ export default {
         color: $TitleColor;
         font-family: 'Nunito Sans', sans-serif;
         &::placeholder {
+            user-select: none;
             color: $btnColor;
             font-family: 'Nunito Sans', sans-serif;
             font-size: 14px;
         }
         &:focus {
-            box-shadow: 0 0 10px $shadowColor;
+            border: 1px solid $btnColor;
+        }
+    }
+    .input-warning {
+        outline: none;
+        width: 100%;
+        padding: 12px 10px;
+        border: 1px solid #c02f2f;
+        border-radius: 3px;
+        box-shadow: 0 0 5px $shadowColor inset;
+        background-color: $mainColor;
+        color: $TitleColor;
+        font-family: 'Nunito Sans', sans-serif;
+        &::placeholder {
+            user-select: none;
+            color: $btnColor;
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 14px;
+        }
+        &:focus {
+            border: 1px solid $btnColor;
         }
     }
     &__footer {

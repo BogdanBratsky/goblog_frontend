@@ -1,11 +1,15 @@
 <template>
-  <blogHeader/>
-  <blogWrapper/>
+  <div style="display: flex; flex-direction: column; min-height: 100vh;">
+    <blogHeader/>
+    <blogWrapper/>
+    <blogFooter/>
+  </div>
 </template>
 
 <script>
 import blogHeader from './components/blogHeader.vue';
 import blogWrapper from './components/blogWrapper.vue';
+import blogFooter from './components/blogFooter.vue';
 
 export default {
   name: 'App',
@@ -16,7 +20,8 @@ export default {
   },
   components: {
     blogHeader,
-    blogWrapper
+    blogWrapper,
+    blogFooter
   },
 }
 </script>
@@ -40,8 +45,11 @@ a {
   text-decoration: none;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   background-color: $mainColor;
-  // background-color: #fffafa;
 }
 </style>

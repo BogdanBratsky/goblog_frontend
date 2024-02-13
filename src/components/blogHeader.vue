@@ -11,7 +11,7 @@
                 <div class="header__user-btn" @click="showMenu()" v-if="isAuthorised">
                     {{ userName }}
                     <div v-if="isClicked" class="user-btn__clicked">
-                        <router-link :to="'/id' + userId">
+                        <router-link :to="'/id' + profile">
                         <span class="user-btn__profile">
                             Мой профиль
                         </span>
@@ -75,8 +75,6 @@ export default {
             this.$store.state.userID = this.userId;
             this.isAuthorised = true;
 
-            console.log(localStorage.token);
-            console.log(response.data);
             this.getUserById(this.userId);
 
             } catch (error) {
@@ -95,7 +93,6 @@ export default {
     },
     mounted() {
         this.getProfile(localStorage.token);
-        console.log(this.isAuthorised)
     },
 }
 </script>
@@ -181,7 +178,7 @@ export default {
         align-items: center;
         padding: 7px 12px;
         border: 1px solid $borderColor;
-        border-radius: 4px;
+        border-radius: 3px;
         background-color: $btnColor;
         color: $btnTxtColor;
         font-family: 'Nunito Sans', sans-serif;

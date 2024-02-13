@@ -1,25 +1,42 @@
 <template>
-    <div class="profile-wrapper">
+    <div v-if="responseError">
+        <blogNotFound/>
+    </div>
+
+    <div v-else class="profile-wrapper">
         <div class="profile">
             <div class="profile__info">
+                <!-- <div class="profile__title" v-if="userId == profile">
+                    Профиль
+                </div> -->
                 <header class="profile__header">
                     <div class="profile__user-name">
                         <h2>{{ userName }}</h2>
                     </div>
-                    <router-link to="/new" v-if="userId == profile">
+                    <router-link to="/new-article" v-if="userId == profile">
                     <div class="profile__write-btn" @click.stop="">
-                        Создать пост
+                        Создать запись
                         <img src="../../public/images/rewrite.png" alt="">
                     </div>
                     </router-link>
-                    <div class="profile__write-btn" v-else>
+                    <!-- <div class="profile__write-btn" v-else>
                         Подписаться
                         <img src="../../public/images/follow.png" alt="">
-                    </div>
+                    </div> -->
                 </header>
                 <div class="options">
                     <div class="profile__buttons">
                         <div 
+                            v-if="userId != profile"
+                            class="profile__buttons-item"
+                            :class="{ 'active-tab': activeTab === 0 }"
+                            @click="changeTab(index)"
+                        >
+                            ПУБЛИКАЦИИ
+                            <div class="articles-counter">{{ totalCount }}</div>
+                        </div>
+                        <div 
+                            v-else
                             class="profile__buttons-item"
                             v-for="(tab, index) in tabs"
                             :key="index"
@@ -34,7 +51,22 @@
             </div>
             
             <div class="user-articles__wrapper">
-                <blogUserArticles :totalCount="totalCount" :articles="articles" v-if="activeTab == 0"/>
+                <blogUserArticles 
+                    @load-more="getUserArticles(userId, page);" 
+                    :totalCount="totalCount" 
+                    :articles="articles" 
+                    :articlesCount="articles.length"
+                    v-if="activeTab == 0"
+                />
+                <!-- <blogArticleItems 
+                    @load-more="getUserArticles(userId, page);" 
+                    :totalCount="totalCount" 
+                    :articlesCount="articles.length"
+                    v-if="activeTab == 0"
+                    v-for="article in articles"
+                    :key="article.PostId"
+                    :article="article"
+                /> -->
             </div>
         </div>
         <div class="sidebar">
@@ -52,6 +84,8 @@
 import blogArticlePagination from '../components/blogArticlePagination.vue';
 import blogUserArticles from '../components/blogUserArticles.vue';
 import blogCategoriesSidebar from '../components/blogCategoriesSidebar.vue';
+import blogNotFound from '../components/blogNotFound.vue';
+import blogArticleItems from '../components/blogArticleItems.vue';
 import axios from 'axios';
 
 export default {
@@ -60,16 +94,20 @@ export default {
         blogUserArticles,
         blogArticlePagination,
         blogCategoriesSidebar,
+        blogNotFound,
+        blogArticleItems
     },
     data() {
         return {
-            tabs: ['ПУБЛИКАЦИИ', 'ПОДПИСКИ', 'СОХРАНЁННОЕ'],
+            tabs: ['ПУБЛИКАЦИИ', 'СОХРАНЁННОЕ'],
             tabs2: ['ПУБЛИКАЦИИ'],
             activeTab: 0,
             articles: [],
             userId: 0,
             userName: '',
             totalCount: 0,
+            page: 1,
+            responseError: false,
         }
     },
     computed: {
@@ -83,24 +121,26 @@ export default {
         },
         async getUserById(id) {
             try {
+                this.responseError = false;
                 const response = await axios.get(`http://localhost:3000/users/${id}`);
                 this.userName = response.data.UserName;
-                console.log(this.userName)
                 document.title = this.userName;
             } catch (error) {
+                this.responseError = true;
+                document.title = '404';
                 console.error('Error fetching user data:', error);
             }
         },
-        async getUserArticles(id) {
+        async getUserArticles(id, page) {
+            this.page++;
             try {
-                const response = await axios.get(`http://localhost:3000/users/${id}/articles`, {
+                const response = await axios.get(`http://localhost:3000/users/${id}/articles?page=${page}&perPage=10`, {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                     },
                 });
-                this.articles = response.data.posts;
+                this.articles = [...this.articles, ...response.data.posts];
                 this.totalCount = response.data.totalCount;
-                console.log(this.articles);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -110,16 +150,16 @@ export default {
         // Вызывается, когда параметры маршрута обновляются
         this.userId = to.params.id;
         this.getUserById(this.userId);
-        this.getUserArticles(this.userId)
+        this.page = 1;
+        this.getUserArticles(this.userId, this.page)
+        this.articles = [];
         next();
     },
     mounted() {
         this.userId = this.$route.params.id;
-        console.log('User ID:', this.userId );
+        console.log(this.userId);
         this.getUserById(this.userId);
-        console.log(this.userName);
-        this.getUserArticles(this.userId);
-        console.log('posts:', this.articles);
+        this.getUserArticles(this.userId, this.page);
         // document.title = this.userName;
     }
 }
@@ -138,6 +178,8 @@ export default {
     position: sticky;
     top: 67px;
     height: 100%;
+    float: right;
+    margin-left: 12px;
 }
 
 .profile {
@@ -165,11 +207,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        // width: 150px;
         padding: 8px 12px;
         margin: 15px;
         border: 1px solid $borderColor;
-        border-radius: 50px;
-        box-shadow: 0 5px 10px $shadowColor;
+        border-radius: 3px;
+        box-shadow: 0 5px 20px $shadowColor;
         background-color: $btnColor;
         color: $btnTxtColor;
         font-family: 'Rubik', sans-serif;
@@ -200,7 +243,7 @@ export default {
         user-select: none;
         display: flex;
         font-size: 15px;
-        color: grey;
+        color: $btnColor;
         font-family: 'Rubik', sans-serif;
     }
     &__buttons-item {
