@@ -113,7 +113,10 @@ export default {
     computed: {
         profile() {
             return this.$store.state.userID;
-        }
+        },
+        // userName() {
+        //     return localStorage.userNAME;
+        // }
     },
     methods: {
         changeTab(index) {
@@ -123,7 +126,8 @@ export default {
             try {
                 this.responseError = false;
                 const response = await axios.get(`http://localhost:3000/users/${id}`);
-                this.userName = response.data.UserName;
+                this.userName = response.data.userName;
+                console.log(this.userName);
                 document.title = this.userName;
             } catch (error) {
                 this.responseError = true;

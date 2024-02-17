@@ -4,7 +4,7 @@
                 <router-link to="/articles">
                 <div class="logo-wrap">
                     <div class="logo-icon">
-                        ARTICLES
+                        <span style="color: #9e9eb0;">alpha</span><span style="color: #d4d4d4;">posts</span>
                     </div>
                 </div>
                 </router-link>
@@ -22,7 +22,7 @@
                         </span>
                     </div>
                 </div>
-            <router-link v-if="!isAuthorised" to="/login">
+            <router-link v-if="isAuthorised == false" to="/login">
                 <div class="header__login-btn">
                     Войти
                 </div>
@@ -54,45 +54,35 @@ export default {
         showMenu() {
             this.isClicked = !this.isClicked;
         },
-        // closeMenu() {
-        //     if (!this.$refs.myElement.contains(event.target)) {
-        //         console.log('Клик вне элемента');
-        //         this.isClicked = false;
-        //     }
-        // },
         exitFunc() {
             localStorage.removeItem('token');
+            localStorage.removeItem('userNAME');
+            localStorage.removeItem('userID');
             window.location.href = '/';
         },
-        async getProfile(token) {
-          try {
-            const response = await axios.get(`http://localhost:3000/profile`, {
-                headers: {
-                'Authorization': `Bearer ${token}`
-                }
-            });
-            this.userId = response.data;
-            this.$store.state.userID = this.userId;
-            this.isAuthorised = true;
-
-            this.getUserById(this.userId);
-
-            } catch (error) {
-                console.error('Error fetching user data:', error);
+        async getProfile() {
+            if (localStorage.userID && localStorage.userNAME) {
+                this.userId = localStorage.userID;
+                this.userName = localStorage.userNAME;
+                this.$store.state.userID = this.userId;
+                this.isAuthorised = true;
+            } else {
                 this.isAuthorised = false;
             }
+
+            // this.getUserById(this.userId);
         }, 
-        async getUserById(id) {
-            try {
-                const response = await axios.get(`http://localhost:3000/users/${id}`);
-                this.userName = response.data.UserName
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        } 
+        // async getUserById(id) {
+        //     try {
+        //         const response = await axios.get(`http://localhost:3000/users/${id}`);
+        //         this.userName = response.data.UserName
+        //     } catch (error) {
+        //         console.error('Error fetching user data:', error);
+        //     }
+        // } 
     },
     mounted() {
-        this.getProfile(localStorage.token);
+        this.getProfile();
     },
 }
 </script>

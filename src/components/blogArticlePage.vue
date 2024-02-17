@@ -73,7 +73,7 @@ export default {
                 // console.log('Making request for user with ID:', id);
                 const response = await axios.get(`http://localhost:3000/users/${id}`);
                 // console.log(response.data.UserName)
-                this.user = response.data.UserName
+                this.user = response.data.userName
                 // return response.data.UserName;
             } catch (error) {
                 console.error('Error fetching user data:', error);

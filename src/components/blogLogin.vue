@@ -78,8 +78,11 @@ export default {
                     })
                     .then(response => {
                         // this.isUncrorrect = false;
-                        this.token = response.data.token;
-                        localStorage.setItem('token', this.token);
+                        console.log(response.data);
+                        // this.token = response.data.token;
+                        localStorage.setItem('token', response.data.token);
+                        localStorage.setItem('userID', response.data.userInfo.userId);
+                        localStorage.setItem('userNAME', response.data.userInfo.userName);
                         window.location.href = '/';
                     })
                     .catch(error => {
