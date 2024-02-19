@@ -1,1 +1,1 @@
-export const serverAddres = 'http://localhost:3000'
+export const serverAddres = 'http://alphaposts.online:3000/api'
