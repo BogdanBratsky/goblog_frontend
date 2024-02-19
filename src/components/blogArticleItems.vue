@@ -52,6 +52,7 @@
 <script>
 import blogOptions from '../components/blogOptions.vue';
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogArticleItems',
@@ -103,7 +104,7 @@ export default {
         async getUserById(id) {
             try {
                 // console.log('Making request for user with ID:', id);
-                const response = await axios.get(`http://localhost:3000/users/${id}`);
+                const response = await axios.get(`${serverAddres}/users/${id}`);
                 // console.log(response.data.UserName)
                 this.user = response.data.userName
                 // return response.data.UserName;
