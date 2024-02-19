@@ -17,6 +17,7 @@
 import blogArticleItems from '../components/blogArticleItems.vue';
 import blogCategoriesSidebar from '../components/blogCategoriesSidebar.vue';
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogCategoryArticles',
@@ -32,7 +33,7 @@ export default {
     methods: {
         async getArticlesByCategory(id) {
             await axios
-                .get(`http://localhost:3000/categories/${id}/articles`)
+                .get(`${serverAddres}/categories/${id}/articles`)
                 .then(response => {
                     this.articles = response.data.posts;
                     console.log(response.data);

@@ -28,6 +28,7 @@
 
 <script>
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogSignup',
@@ -91,7 +92,7 @@ export default {
             if (this.formIsValid() && this.passwordCheck.Password1 == this.passwordCheck.Password2) {
                 this.formData.Password = this.passwordCheck.Password1;
                 await axios
-                    .post('http://localhost:3000/register', this.formData, {
+                    .post(`${serverAddres}/register`, this.formData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }

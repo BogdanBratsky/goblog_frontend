@@ -25,6 +25,7 @@
 <script>
 import blogNotFound from '../components/blogNotFound.vue';
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogArticlePage',
@@ -53,7 +54,7 @@ export default {
         async loadArticles(id) {
             try {
                 this.responseError = false;
-                const response = await axios.get(`http://localhost:3000/articles/${id}`, {
+                const response = await axios.get(`${serverAddres}/articles/${id}`, {
                     // Добавим опции для обхода проблемы CORS в разработке
                     headers: {
                         'Access-Control-Allow-Origin': '*',
@@ -71,7 +72,7 @@ export default {
         async getUserById(id) {
             try {
                 // console.log('Making request for user with ID:', id);
-                const response = await axios.get(`http://localhost:3000/users/${id}`);
+                const response = await axios.get(`${serverAddres}/users/${id}`);
                 // console.log(response.data.UserName)
                 this.user = response.data.userName
                 // return response.data.UserName;

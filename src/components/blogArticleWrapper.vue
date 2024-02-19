@@ -28,6 +28,7 @@ import blogArticlePagination from '../components/blogArticlePagination.vue';
 import blogLoadMore from '../components/blogLoadMore.vue';
 import blogCategoriesSidebar from '../components/blogCategoriesSidebar.vue';
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     data() {
@@ -52,7 +53,7 @@ export default {
     methods: {
         async loadArticles() {
             try {
-                const response = await axios.get(`http://localhost:3000/articles?page=${this.pageNum}&perPage=${this.perPage}`, {
+                const response = await axios.get(`${serverAddres}/articles?page=${this.pageNum}&perPage=${this.perPage}`, {
                     // Добавим опции для обхода проблемы CORS в разработке
                     headers: {
                         'Access-Control-Allow-Origin': '*',

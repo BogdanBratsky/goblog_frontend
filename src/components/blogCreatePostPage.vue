@@ -36,6 +36,7 @@
 
 <script>
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogCreatePostPage',
@@ -53,7 +54,7 @@ export default {
         async createArticle() {
             if (this.formData.PostTitle == '' || this.formData.PostContent == '') return
             await axios
-                .post('http://localhost:3000/articles', this.formData, {
+                .post(`${serverAddres}/articles`, this.formData, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.token}`
@@ -68,7 +69,7 @@ export default {
         },
         async getCategories() {
             await axios
-                .get('http://localhost:3000/categories')
+                .get(`${serverAddres}/categories`)
                 .then(response => {
                     this.categories = response.data;
                 })

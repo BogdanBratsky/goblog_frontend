@@ -87,6 +87,7 @@ import blogCategoriesSidebar from '../components/blogCategoriesSidebar.vue';
 import blogNotFound from '../components/blogNotFound.vue';
 import blogArticleItems from '../components/blogArticleItems.vue';
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogProfilePage',
@@ -125,7 +126,7 @@ export default {
         async getUserById(id) {
             try {
                 this.responseError = false;
-                const response = await axios.get(`http://localhost:3000/users/${id}`);
+                const response = await axios.get(`${serverAddres}/users/${id}`);
                 this.userName = response.data.userName;
                 console.log(this.userName);
                 document.title = this.userName;
@@ -138,7 +139,7 @@ export default {
         async getUserArticles(id, page) {
             this.page++;
             try {
-                const response = await axios.get(`http://localhost:3000/users/${id}/articles?page=${page}&perPage=10`, {
+                const response = await axios.get(`${serverAddres}/users/${id}/articles?page=${page}&perPage=10`, {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                     },

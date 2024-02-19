@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogLogin',
@@ -71,7 +72,7 @@ export default {
         async submitHadnler() {
             if (this.formIsValid()) {
                 await axios
-                    .post('http://localhost:3000/login', this.formData, {
+                    .post(`${serverAddres}/login`, this.formData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }

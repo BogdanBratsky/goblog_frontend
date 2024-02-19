@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogOptions',
@@ -45,7 +46,7 @@ export default {
         async deletePost(id) {
             console.log(id);
             await axios
-                .delete(`http://localhost:3000/articles/${id}`, {
+                .delete(`${serverAddres}/articles/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.token}`
                     }

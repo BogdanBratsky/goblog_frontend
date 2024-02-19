@@ -15,6 +15,7 @@
 
 <script>
 import axios from 'axios';
+import { serverAddres } from '../../config.js';
 
 export default {
     name: 'blogCategoriesSidebar',
@@ -26,7 +27,7 @@ export default {
     methods: {
         async getCategories() {
             await axios
-                .get('http://localhost:3000/categories')
+                .get(`${serverAddres}/categories`)
                 .then(response => {
                     this.categories = response.data;
                 })

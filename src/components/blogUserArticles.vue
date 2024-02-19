@@ -48,7 +48,6 @@ import blogArticlePagination from '../components/blogArticlePagination.vue';
 import blogOptions from '../components/blogOptions.vue';
 import blogLoadMore from '../components/blogLoadMore.vue';
 
-
 export default {
     name: 'blogUserArticles',
     components: {
